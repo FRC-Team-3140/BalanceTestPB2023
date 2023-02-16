@@ -57,11 +57,10 @@ public class DriveTrain extends SubsystemBase {
 
     private AddressableLED led_strip = new AddressableLED(5);
 
-
-    private AddressableLED led_strip2 = new AddressableLED(4);
     
-    
-    LinearFilter angle_filter =  LinearFilter.singlePoleIIR(0.1, 0.02);
+    double accel_angle = 0.0;
+    double accel_filtered = 0.0;
+    LinearFilter angle_filter =  LinearFilter.singlePoleIIR(0.2, 0.02);
 
     private Accelerometer accelerometer;
 
@@ -137,46 +136,28 @@ public class DriveTrain extends SubsystemBase {
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
         drivetrain_table = inst.getTable("drivetrain");
         led_strip.setLength(15);
-        //led_strip2.setLength(15);
     }
 
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        //System.out.println("Drive Periodic");
-
-        //talonSRX1.set(ControlMode.PercentOutput, 0.7);
-        //talonSRX2.set(ControlMode.PercentOutput, 0.7);
-        //talonSRX3.set(ControlMode.PercentOutput,0.7);
-
-        // talonSRX1.setVoltage(6.0);
-        // talonSRX2.setVoltage(-6.0);
-        // talonSRX3.setVoltage(6.0);
-
-        // talonSRX4.setVoltage(-6.0);
-        // talonSRX5.setVoltage(6.0);
-        // talonSRX6.setVoltage(-6.0);
-
-        //differentialDrive1.arcadeDrive(0.5, 0.0);
-        //leftMotorGroup.set(-0.5);
-        //rightMotorGroup.set(0.5);
         drivetrain_table.getEntry("accel_x").setNumber(accelerometer.getX());
         drivetrain_table.getEntry("accel_y").setNumber(accelerometer.getY());
         drivetrain_table.getEntry("accel_z").setNumber(accelerometer.getZ());
-        //x = opposite z = adjacent
-        double accel_angle = -Math.atan2(getAccelX(), getAccelZ())*180/Math.PI;
+
+        accel_angle = -Math.atan2(getAccelX(), getAccelZ())*180/Math.PI;
         
         drivetrain_table.getEntry("accel_angle").setNumber(accel_angle);
         
 
-        accel_angle = angle_filter.calculate(accel_angle);
+        accel_filtered = angle_filter.calculate(accel_angle);
 
-        if(accel_angle > 15) accel_angle=15;
-        if(accel_angle < -15) accel_angle=-15;
+        if(accel_filtered > 15) accel_filtered=15;
+        if(accel_filtered < -15) accel_filtered=-15;
         
-        drivetrain_table.getEntry("lt").setNumber(accel_angle*7.0/15.0);
+        drivetrain_table.getEntry("lt").setNumber(accel_filtered*7.0/15.0);
 
-        int light_number = (int)(7 + Math.round(accel_angle*7.0/15.0));
+        int light_number = (int)(7 + Math.round(accel_filtered*7.0/15.0));
         drivetrain_table.getEntry("light_number").setNumber(light_number);
 
         AddressableLEDBuffer led_data = new AddressableLEDBuffer(15);
@@ -190,12 +171,7 @@ public class DriveTrain extends SubsystemBase {
         }
 
         led_strip.setData(led_data);
-        //led_strip2.setData(led_data);
         led_strip.start();
-        //led_strip2.start();
-
-    
-        
     }
 
     @Override
@@ -223,6 +199,14 @@ public class DriveTrain extends SubsystemBase {
         return accelerometer.getZ();
     }
 
+    public double getAccelAngle(){
+        return accel_angle;
+    }
+
+
+    public double getAccelFiltered(){
+        return accel_filtered;
+    }
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 
