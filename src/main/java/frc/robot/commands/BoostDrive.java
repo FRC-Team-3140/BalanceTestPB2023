@@ -18,7 +18,9 @@ public class BoostDrive extends CommandBase {
   double speed_normal = 0.65;
   double speed_max = 1.0;
   double speed_min = 0.50;
-  double turn_sensitivity = 1.0;
+  double turn_norm = 0.8;
+  double turn_max = 1.0;
+  double turn_min = 0.7;
 
   /**
    * Creates a new ArcadeDrive. This command will drive your robot according to the speed supplier
@@ -53,11 +55,14 @@ public class BoostDrive extends CommandBase {
     //double slow = 0.5+0.5*m_slowAxisSupplier.get();
     double fast = Math.min(Math.max(m_boostAxisSupplier.get(),0.0),1.0);
     double slow = Math.min(Math.max(m_slowAxisSupplier.get(),0.0),1.0);
+    double tfast = Math.min(Math.max(m_boostAxisSupplier.get(),0.0),1.0);
+    double tslow = Math.min(Math.max(m_slowAxisSupplier.get(),0.0),1.0);
     double boost = speed_normal + (speed_max-speed_normal)*fast - (speed_normal-speed_min)*slow;
+    double tboost = turn_norm + (turn_max-turn_norm)*tfast - (turn_norm-turn_min)*tslow;
 
     System.out.printf("F: %.3f   S: %.3f   B: %.3f\n",fast,slow,boost);
     
-    m_drivetrain.arcadeDrive(boost*m_xaxisSpeedSupplier.get(),boost*turn_sensitivity*m_zaxisRotateSupplier.get());
+    m_drivetrain.arcadeDrive(boost*m_xaxisSpeedSupplier.get(),tboost*m_zaxisRotateSupplier.get());
   }
 
   // Called once the command ends or is interrupted.
