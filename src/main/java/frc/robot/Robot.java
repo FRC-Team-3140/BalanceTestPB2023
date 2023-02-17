@@ -14,8 +14,15 @@ package frc.robot;
 
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -31,6 +38,10 @@ public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
 
     private RobotContainer m_robotContainer;
+
+    private final AHRS NAVX = new AHRS(Port.kMXP);
+
+    NetworkTable DataNAVX;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -101,6 +112,11 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
+        int test = 0;
+        NetworkTableInstance inst = NetworkTableInstance.getDefault();
+        DataNAVX = inst.getTable("DataNAVX").getSubTable("Jonathan Wasn't here...");
+        
+        DataNAVX.getEntry("Jonathan Wasn't here...").setNumber(test);
     }
 
     /**
@@ -108,6 +124,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
+        
     }
 
     @Override
