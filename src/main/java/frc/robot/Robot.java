@@ -18,11 +18,13 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
+import com.ctre.phoenixpro.controls.VelocityDutyCycle;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.I2C.Port;
+import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -112,11 +114,23 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
-        int test = 0;
+        
+        // displacement, Accelerometer, gyro, Velocity
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
         DataNAVX = inst.getTable("DataNAVX").getSubTable("Jonathan Wasn't here...");
         
-        DataNAVX.getEntry("Jonathan Wasn't here...").setNumber(test);
+        DataNAVX.getEntry("Accelerometer: x").setNumber(NAVX.getRawAccelX());
+        DataNAVX.getEntry("Accelerometer: y").setNumber(NAVX.getRawAccelY());
+        DataNAVX.getEntry("Accelerometer: z").setNumber(NAVX.getRawAccelZ());
+        DataNAVX.getEntry("Displacement: x").setNumber(NAVX.getDisplacementX());
+        DataNAVX.getEntry("Displacement: y").setNumber(NAVX.getDisplacementY());
+        DataNAVX.getEntry("Displacement: z").setNumber(NAVX.getDisplacementZ());
+        DataNAVX.getEntry("Gyro: x").setNumber(NAVX.getRawGyroX());
+        DataNAVX.getEntry("Gyro: y").setNumber(NAVX.getRawGyroY());
+        DataNAVX.getEntry("Gyro: z").setNumber(NAVX.getRawGyroZ());
+        DataNAVX.getEntry("Velocity: x").setNumber(NAVX.getVelocityX());
+        DataNAVX.getEntry("Velocity: y").setNumber(NAVX.getVelocityY());
+        DataNAVX.getEntry("Velocity: z").setNumber(NAVX.getVelocityZ());
     }
 
     /**
