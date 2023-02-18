@@ -56,6 +56,7 @@ public class Robot extends TimedRobot {
 
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
         DataNAVX = inst.getTable("SmartDashboard").getSubTable("DataNAVX");
+        
     }
 
     /**
@@ -85,10 +86,12 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
+
     }
 
     @Override
     public void disabledPeriodic() {
+        m_robotContainer.runCaution();
     }
 
     /**
