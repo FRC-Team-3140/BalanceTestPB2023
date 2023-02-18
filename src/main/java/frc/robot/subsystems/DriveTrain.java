@@ -28,6 +28,7 @@ import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.networktables.NetworkTable;
 //import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+//import edu.wpi.first.networktables.PubSubOptions;
 //import edu.wpi.first.wpilibj.AddressableLED;
 //import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
@@ -65,6 +66,7 @@ public class DriveTrain extends SubsystemBase {
     private Accelerometer accelerometer;
 
     NetworkTable drivetrain_table;
+    // private final DoubleEntry max_speed;
 
     /**
     *
@@ -130,6 +132,13 @@ public class DriveTrain extends SubsystemBase {
         accelerometer = new BuiltInAccelerometer();
 
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
+        // Challenges with new networktable entries - Does no show up correctly in table
+        // DoubleTopic topic =
+        // inst.getDoubleTopic("SmartDashboard/DriveTrain/max_speed");
+        // topic.setPersistent(true);
+        // topic.publish(PubSubOption.disableLocal(false),PubSubOption.disableRemote(false),PubSubOption.periodic(0.5));
+        // max_speed = topic.getEntry(1.0);
+        // max_speed.set(max_speed.get());
 
         drivetrain_table = inst.getTable("SmartDashboard").getSubTable("DriveTrain");
 
@@ -149,6 +158,9 @@ public class DriveTrain extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
+
+        checkNetworkTableChanges();
+
         drivetrain_table.getEntry("accel_x").setNumber(accelerometer.getX());
         drivetrain_table.getEntry("accel_y").setNumber(accelerometer.getY());
         drivetrain_table.getEntry("accel_z").setNumber(accelerometer.getZ());
@@ -157,22 +169,23 @@ public class DriveTrain extends SubsystemBase {
 
         drivetrain_table.getEntry("accel_angle").setNumber(accel_angle);
 
-        // Check for a change in the angle filter values
-        double new_tc = drivetrain_table.getEntry("angle_filter_time_const").getNumber(0.2).doubleValue();
-        double new_pc = drivetrain_table.getEntry("angle_filter_period_const").getNumber(0.02).doubleValue();
-        if(new_tc != aftc || new_pc != afpc){
-            aftc = new_tc;
-            afpc = new_pc;
-            angle_filter = LinearFilter.singlePoleIIR(aftc, afpc);
-            System.out.printf("Updating angle filter values. time=%.3f period=%.3f \n",aftc,afpc);
-        }
-
-        angle_filtered = angle_filter.calculate(accel_angle);
-
         if (angle_filtered > 15)
             angle_filtered = 15;
         if (angle_filtered < -15)
             angle_filtered = -15;
+    }
+
+    private void checkNetworkTableChanges() {
+        // Check for a change in the angle filter values
+        double new_tc = drivetrain_table.getEntry("angle_filter_time_const").getNumber(0.2).doubleValue();
+        double new_pc = drivetrain_table.getEntry("angle_filter_period_const").getNumber(0.02).doubleValue();
+        if (new_tc != aftc || new_pc != afpc) {
+            aftc = new_tc;
+            afpc = new_pc;
+            angle_filter = LinearFilter.singlePoleIIR(aftc, afpc);
+            System.out.printf("Updating angle filter values. time=%.3f period=%.3f \n", aftc, afpc);
+        }
+        angle_filtered = angle_filter.calculate(accel_angle);
     }
 
     @Override
