@@ -55,13 +55,13 @@ public class TestBalance extends CommandBase {
     @Override
     public void execute() {
         double angle = m_driveTrain.getAccelFiltered();
-        if (angle > 10) {
+        if (angle > 14) {
             m_driveTrain.arcadeDrive(0.5, 0);
-        } else if (angle < 6 && angle > 2) {
-            m_driveTrain.arcadeDrive(-0.5, 0);
-        } else if (angle > -6 && angle < -2) {
-            m_driveTrain.arcadeDrive(0.5, 0);
-        } else if (angle < -10) {
+        } else if (angle < 12 && angle > 2) {
+            m_driveTrain.arcadeDrive(-0.6, 0);
+        } else if (angle > -12 && angle < -2) {
+            m_driveTrain.arcadeDrive(0.6, 0);
+        } else if (angle < -14) {
             m_driveTrain.arcadeDrive(-0.5, 0);
         }
     }
