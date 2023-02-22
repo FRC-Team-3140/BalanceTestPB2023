@@ -60,7 +60,7 @@ public class BoostDrive extends CommandBase {
     double boost = speed_normal + (speed_max-speed_normal)*fast - (speed_normal-speed_min)*slow;
     double tboost = turn_norm + (turn_max-turn_norm)*tfast - (turn_norm-turn_min)*tslow;
 
-    System.out.printf("F: %.3f   S: %.3f   B: %.3f\n",fast,slow,boost);
+    //System.out.printf("F: %.3f   S: %.3f   B: %.3f\n",fast,slow,boost);
     
     m_drivetrain.arcadeDrive(boost*m_xaxisSpeedSupplier.get(),tboost*m_zaxisRotateSupplier.get());
   }

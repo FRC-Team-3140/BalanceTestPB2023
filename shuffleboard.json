@@ -330,27 +330,193 @@
       "autoPopulate": false,
       "autoPopulatePrefix": "",
       "widgetPane": {
-        "gridSize": 128.0,
+        "gridSize": 96.0,
         "showGrid": true,
-        "hgap": 16.0,
-        "vgap": 16.0,
+        "hgap": 8.0,
+        "vgap": 8.0,
         "titleType": 0,
         "tiles": {
-          "6,0": {
+          "9,0": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/TestBalance/current_angle",
+              "_source1": "network_table:///SmartDashboard/DriveTrain/arcade_xspeed",
+              "_title": "/SmartDashboard/TestBalance/current_angle",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 15.0,
+              "Y-axis/Lower bound": -15.0,
+              "Y-axis/Unit": "deg",
+              "Visible data/SmartDashboard/DriveTrain/arcade_xspeed": true
+            }
+          },
+          "4,0": {
             "size": [
               2,
               1
             ],
             "content": {
               "_type": "Number Slider",
-              "_source0": "network_table:///SmartDashboard/DriveTrain/angle_filter_time_const",
-              "_title": "SmartDashboard/DriveTrain/angle_filter_time_const",
+              "_source0": "network_table:///Settings3140/balance_speed",
+              "_title": "/Settings3140/balance_speed",
               "_glyph": 148,
               "_showGlyph": false,
               "Slider Settings/Min": 0.0,
               "Slider Settings/Max": 1.0,
-              "Slider Settings/Block increment": 0.02,
+              "Slider Settings/Block increment": 0.0625,
               "Visuals/Display value": true
+            }
+          },
+          "4,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Number Slider",
+              "_source0": "network_table:///Settings3140/balance_pid_p",
+              "_title": "Settings3140/balance_pid_p",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Slider Settings/Min": 0.0,
+              "Slider Settings/Max": 0.1,
+              "Slider Settings/Block increment": 0.0625,
+              "Visuals/Display value": true
+            }
+          },
+          "4,3": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Number Slider",
+              "_source0": "network_table:///Settings3140/balance_pid_d",
+              "_title": "/Settings3140/balance_pid_d",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Slider Settings/Min": 0.0,
+              "Slider Settings/Max": 0.1,
+              "Slider Settings/Block increment": 0.0625,
+              "Visuals/Display value": true
+            }
+          },
+          "4,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Number Slider",
+              "_source0": "network_table:///Settings3140/balance_pid_i",
+              "_title": "Settings3140/balance_pid_i",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Slider Settings/Min": -1.0,
+              "Slider Settings/Max": 1.0,
+              "Slider Settings/Block increment": 0.0625,
+              "Visuals/Display value": true
+            }
+          },
+          "6,0": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/DriveTrain/angle_filtered",
+              "_title": "SmartDashboard/DriveTrain/angle_filtered",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
+              "Y-axis/Automatic bounds": false,
+              "Y-axis/Upper bound": 15.0,
+              "Y-axis/Lower bound": -15.0,
+              "Y-axis/Unit": "ul",
+              "Visible data/SmartDashboard/DriveTrain/angle_filtered": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Tab 4",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {
+          "3,0": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/DataNAVX/Displacement: x",
+              "_source1": "network_table:///SmartDashboard/DataNAVX/Displacement: y",
+              "_title": "Graph (2 sources)",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Y-axis/Unit": "ul",
+              "Visible data/SmartDashboard/DataNAVX/Displacement: x": true,
+              "Visible data/SmartDashboard/DataNAVX/Displacement: y": true
+            }
+          },
+          "6,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Number Bar",
+              "_source0": "network_table:///SmartDashboard/DataNAVX/Velocity: y",
+              "_title": "SmartDashboard/DataNAVX/Velocity: y",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Range/Min": -1.0,
+              "Range/Max": 1.0,
+              "Range/Center": 0.0,
+              "Visuals/Num tick marks": 5,
+              "Visuals/Show text": true,
+              "Visuals/Orientation": "HORIZONTAL"
+            }
+          },
+          "6,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Number Bar",
+              "_source0": "network_table:///SmartDashboard/DataNAVX/Velocity: x",
+              "_title": "SmartDashboard/DataNAVX/Velocity: x",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Range/Min": -1.0,
+              "Range/Max": 1.0,
+              "Range/Center": 0.0,
+              "Visuals/Num tick marks": 5,
+              "Visuals/Show text": true,
+              "Visuals/Orientation": "HORIZONTAL"
             }
           }
         }
@@ -361,6 +527,6 @@
     "x": 0.0,
     "y": 0.0,
     "width": 1280.0,
-    "height": 480.0
+    "height": 590.6666870117188
   }
 }
