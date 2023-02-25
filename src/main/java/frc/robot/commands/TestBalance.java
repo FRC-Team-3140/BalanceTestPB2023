@@ -35,13 +35,13 @@ public class TestBalance extends CommandBase {
     private Settings3140 settings = Settings3140.getInstance();
 
     //NetworkTable balance_table;
-    double max_speed = 0.5;
+    double max_speed = 0.55;
     double max_angle = 15.0;
     //double pid_p = max_speed / max_angle;
     //double pid_i = 0.0;
     //double pid_d = 0.0;
 
-    PIDController pid = new PIDController(0.12,0.00,0.004);
+    PIDController pid = new PIDController(0.10,0.00,0.02);
 
     //NetworkTableInstance inst = NetworkTableInstance.getDefault();
     NetworkTable DataNAVX ;
@@ -125,9 +125,8 @@ public class TestBalance extends CommandBase {
         double targ_speed = pid.calculate(-angle);
 
         // limit max speed
-        double max_speed = 0.5;
-
         double speed = Math.min(Math.max(targ_speed, -max_speed), max_speed);
+
         System.out.printf("angle=%.3f targ_speed=%.3f speed=%.3f max_speed=%.3f p=%.5f i=%.5f d=%.5f\n", angle, targ_speed, speed, max_speed, pid.getP(),pid.getI(),pid.getD());
         m_driveTrain.arcadeDrive(speed, 0);
 
