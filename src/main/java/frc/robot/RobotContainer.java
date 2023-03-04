@@ -133,9 +133,15 @@ public class RobotContainer {
         final JoystickButton lBButton = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
         lBButton.whileTrue(new LightCone(m_lightshow).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
-        // Originally ran TestBalance
+        Command easy_balance = new SequentialCommandGroup(
+            //new MoveToRamp(m_driveTrain).withInterruptBehavior(InterruptionBehavior.kCancelSelf),
+            new ClimbRamp(m_driveTrain).withInterruptBehavior(InterruptionBehavior.kCancelSelf),
+            new BalanceAndEngage(m_driveTrain).withInterruptBehavior(InterruptionBehavior.kCancelSelf)
+            );
+
+
         final JoystickButton xButton = new JoystickButton(driverController, XboxController.Button.kX.value);
-        xButton.whileTrue(new TestBalance(m_driveTrain).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+        xButton.whileTrue(easy_balance);
 
         final JoystickButton yButton = new JoystickButton(driverController, XboxController.Button.kY.value);
         yButton.whileTrue(new TestForward(m_driveTrain).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
