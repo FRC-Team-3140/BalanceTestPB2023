@@ -62,7 +62,14 @@ public class DriveTrain extends SubsystemBase {
 
     double accel_angle = 0.0;
     double angle_filtered = 0.0;
-    LinearFilter angle_filter;
+
+    double m_distance = 0.0;
+    double m_speed = 0.0;
+    double m_speed_filtered = 0.0;
+
+    LinearFilter m_angle_filter;
+    LinearFilter m_speed_filter;
+
     double afpc = 0.02;
     double aftc = 0.2;
 
@@ -83,11 +90,11 @@ public class DriveTrain extends SubsystemBase {
         DigitalInput l2 = new DigitalInput(8); // blue
         DigitalInput r1 = new DigitalInput(7); // yellow
         DigitalInput r2 = new DigitalInput(6); // blue
-        leftEncoder = new Encoder(l1,l2,true);
-        rightEncoder =  new Encoder(r1,r2,false);
+        leftEncoder = new Encoder(l1, l2, true);
+        rightEncoder = new Encoder(r1, r2, false);
 
-        leftEncoder.setDistancePerPulse(1.0/3000.0);
-        rightEncoder.setDistancePerPulse(1.0/3000.0);
+        leftEncoder.setDistancePerPulse(1.0 / 3000.0);
+        rightEncoder.setDistancePerPulse(1.0 / 3000.0);
 
         talonSRX1 = new WPI_TalonSRX(2);
 
@@ -168,7 +175,8 @@ public class DriveTrain extends SubsystemBase {
         drivetrain_table.getEntry("angle_filter_time_const").setPersistent();
         drivetrain_table.getEntry("angle_filter_period_const").setPersistent();
 
-        angle_filter = LinearFilter.singlePoleIIR(aftc, afpc);
+        m_angle_filter = LinearFilter.singlePoleIIR(aftc, afpc);
+        m_speed_filter = LinearFilter.singlePoleIIR(0.5, 0.02);
     }
 
     @Override
@@ -190,11 +198,15 @@ public class DriveTrain extends SubsystemBase {
         if (angle_filtered < -15)
             angle_filtered = -15;
 
-            drivetrain_table.getEntry("enc_dist_left").setDouble(leftEncoder.getDistance());
-            //drivetrain_table.getEntry("enc_dist_right").setDouble(rightEncoder.getDistance());
-            drivetrain_table.getEntry("enc_rate_left").setDouble(leftEncoder.getRate());
-            //drivetrain_table.getEntry("enc_rate_right").setDouble(rightEncoder.getRate());
+        m_distance = leftEncoder.getDistance();
+        m_speed = leftEncoder.getRate();
         
+        m_speed_filtered = m_speed_filter.calculate(m_speed);
+
+
+        drivetrain_table.getEntry("distance").setDouble(m_distance);
+        drivetrain_table.getEntry("speed").setDouble(m_speed);
+        drivetrain_table.getEntry("speed_filtered").setDouble(m_speed_filtered);
     }
 
     private void checkNetworkTableChanges() {
@@ -204,12 +216,15 @@ public class DriveTrain extends SubsystemBase {
         if (new_tc != aftc || new_pc != afpc) {
             aftc = new_tc;
             afpc = new_pc;
-            angle_filter = LinearFilter.singlePoleIIR(aftc, afpc);
+            m_angle_filter = LinearFilter.singlePoleIIR(aftc, afpc);
             System.out.printf("Updating angle filter values. time=%.3f period=%.3f \n", aftc, afpc);
         }
-        angle_filtered = angle_filter.calculate(accel_angle);
+
+        angle_filtered = m_angle_filter.calculate(accel_angle);
 
         drivetrain_table.getEntry("angle_filtered").setDouble(angle_filtered);
+        drivetrain_table.getEntry("speed_filtered").setDouble(m_speed_filtered);
+
     }
 
     @Override
@@ -220,7 +235,7 @@ public class DriveTrain extends SubsystemBase {
 
     public void arcadeDrive(double xSpeed, double zRotation) {
         drivetrain_table.getEntry("arcade_xspeed").setNumber(xSpeed);
-        drivetrain_table.getEntry("arcade_zrotation").setNumber(xSpeed);
+        drivetrain_table.getEntry("arcade_zrotation").setNumber(zRotation);
 
         differentialDrive1.arcadeDrive(xSpeed, zRotation);
     }
@@ -241,8 +256,20 @@ public class DriveTrain extends SubsystemBase {
         return accel_angle;
     }
 
-    public double getAccelFiltered() {
+    public double getAngleFiltered() {
         return angle_filtered;
+    }
+
+    public double getSpeedFiltered() {
+        return m_speed_filtered;
+    }
+
+    public double getSpeed(){
+        return m_speed;
+    }
+
+    public double getPosition(){
+        return m_distance;
     }
     // Put methods for controlling this subsystem
     // here. Call these from Commands.

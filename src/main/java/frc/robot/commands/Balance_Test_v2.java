@@ -28,7 +28,7 @@ public class Balance_Test_v2 extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double angle = m_DriveTrain.getAccelFiltered();
+    double angle = m_DriveTrain.getAngleFiltered();
     double speed = pidController.calculate(-angle);
 
     speed = Math.min(Math.max(speed, -max_speed), max_speed);

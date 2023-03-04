@@ -44,6 +44,8 @@ public class Robot extends TimedRobot {
     NetworkTable DataNAVX;
     LinearFilter angle_filter = LinearFilter.singlePoleIIR(0.1, 0.02);;
 
+    double m_last_pitch = 0.0;
+
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -82,18 +84,18 @@ public class Robot extends TimedRobot {
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
 
-        //DataNAVX.getEntry("Accelerometer: x").setNumber(NAVX.getRawAccelX());
-        //DataNAVX.getEntry("Accelerometer: y").setNumber(NAVX.getRawAccelY());
-        //DataNAVX.getEntry("Accelerometer: z").setNumber(NAVX.getRawAccelZ());
-        //DataNAVX.getEntry("Displacement: x").setNumber(NAVX.getDisplacementX());
-        //DataNAVX.getEntry("Displacement: y").setNumber(NAVX.getDisplacementY());
-        //DataNAVX.getEntry("Displacement: z").setNumber(NAVX.getDisplacementZ());
-        //DataNAVX.getEntry("Gyro: x").setNumber(NAVX.getRawGyroX());
-        //DataNAVX.getEntry("Gyro: y").setNumber(NAVX.getRawGyroY());
-        //DataNAVX.getEntry("Gyro: z").setNumber(NAVX.getRawGyroZ());
-        //DataNAVX.getEntry("Velocity: x").setNumber(NAVX.getVelocityX());
-        //DataNAVX.getEntry("Velocity: y").setNumber(NAVX.getVelocityY());
-        //DataNAVX.getEntry("Velocity: z").setNumber(NAVX.getVelocityZ());
+        // DataNAVX.getEntry("Accelerometer: x").setNumber(NAVX.getRawAccelX());
+        // DataNAVX.getEntry("Accelerometer: y").setNumber(NAVX.getRawAccelY());
+        // DataNAVX.getEntry("Accelerometer: z").setNumber(NAVX.getRawAccelZ());
+        // DataNAVX.getEntry("Displacement: x").setNumber(NAVX.getDisplacementX());
+        // DataNAVX.getEntry("Displacement: y").setNumber(NAVX.getDisplacementY());
+        // DataNAVX.getEntry("Displacement: z").setNumber(NAVX.getDisplacementZ());
+        // DataNAVX.getEntry("Gyro: x").setNumber(NAVX.getRawGyroX());
+        // DataNAVX.getEntry("Gyro: y").setNumber(NAVX.getRawGyroY());
+        // DataNAVX.getEntry("Gyro: z").setNumber(NAVX.getRawGyroZ());
+        // DataNAVX.getEntry("Velocity: x").setNumber(NAVX.getVelocityX());
+        // DataNAVX.getEntry("Velocity: y").setNumber(NAVX.getVelocityY());
+        // DataNAVX.getEntry("Velocity: z").setNumber(NAVX.getVelocityZ());
 
     }
 
@@ -108,6 +110,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledPeriodic() {
         m_robotContainer.runCaution();
+        updateNavX();
     }
 
     /**
@@ -129,13 +132,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousPeriodic() {
-        DataNAVX.getEntry("navx_yaw").setNumber(NAVX.getYaw());
-        DataNAVX.getEntry("navx_pitch").setNumber(NAVX.getPitch());
-        DataNAVX.getEntry("navx_roll").setNumber(NAVX.getRoll());
-        DataNAVX.getEntry("navx_compass").setNumber(NAVX.getCompassHeading());
-
-        double filtered_pitch = angle_filter.calculate(NAVX.getPitch());
-        DataNAVX.getEntry("navx_filtered_pitch").setNumber(filtered_pitch);
+        updateNavX();
     }
 
     @Override
@@ -148,7 +145,6 @@ public class Robot extends TimedRobot {
             m_autonomousCommand.cancel();
         }
 
-
     }
 
     /**
@@ -157,13 +153,28 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         // displacement, Accelerometer, gyro, Velocity
+
+        updateNavX();
+    }
+
+    public void updateNavX() {
+        //System.out.println("Update NAVX");
         DataNAVX.getEntry("navx_yaw").setNumber(NAVX.getYaw());
         DataNAVX.getEntry("navx_pitch").setNumber(NAVX.getPitch());
         DataNAVX.getEntry("navx_roll").setNumber(NAVX.getRoll());
         DataNAVX.getEntry("navx_compass").setNumber(NAVX.getCompassHeading());
 
+        DataNAVX.getEntry("navx_gyrox").setNumber(NAVX.getRawGyroX());
+        DataNAVX.getEntry("navx_gyroy").setNumber(NAVX.getRawGyroY());
+        DataNAVX.getEntry("navx_gyroz").setNumber(NAVX.getRawGyroZ());
+
         double filtered_pitch = angle_filter.calculate(NAVX.getPitch());
         DataNAVX.getEntry("navx_filtered_pitch").setNumber(filtered_pitch);
+
+        double pitch_change = Math.abs(50.0 * (filtered_pitch - m_last_pitch)); // Estimate the pitch change per second
+        m_last_pitch = filtered_pitch;
+
+        DataNAVX.getEntry("navx_pitch_change").setNumber(pitch_change);
 
     }
 
@@ -178,6 +189,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void testPeriodic() {
+        updateNavX();
     }
 
 }
