@@ -18,11 +18,9 @@ import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -39,12 +37,6 @@ public class Robot extends TimedRobot {
 
     private RobotContainer m_robotContainer;
 
-    private final AHRS NAVX = new AHRS(Port.kMXP);
-
-    NetworkTable DataNAVX;
-    LinearFilter angle_filter = LinearFilter.singlePoleIIR(0.1, 0.02);;
-
-    double m_last_pitch = 0.0;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -58,8 +50,6 @@ public class Robot extends TimedRobot {
         m_robotContainer = RobotContainer.getInstance();
         HAL.report(tResourceType.kResourceType_Framework, tInstances.kFramework_RobotBuilder);
 
-        NetworkTableInstance inst = NetworkTableInstance.getDefault();
-        DataNAVX = inst.getTable("SmartDashboard").getSubTable("DataNAVX");
 
     }
 
@@ -110,7 +100,6 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledPeriodic() {
         m_robotContainer.runCaution();
-        updateNavX();
     }
 
     /**
@@ -132,7 +121,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousPeriodic() {
-        updateNavX();
+        m_robotContainer.updateNavX();
     }
 
     @Override
@@ -154,29 +143,9 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         // displacement, Accelerometer, gyro, Velocity
 
-        updateNavX();
+        m_robotContainer.updateNavX();
     }
 
-    public void updateNavX() {
-        //System.out.println("Update NAVX");
-        DataNAVX.getEntry("navx_yaw").setNumber(NAVX.getYaw());
-        DataNAVX.getEntry("navx_pitch").setNumber(NAVX.getPitch());
-        DataNAVX.getEntry("navx_roll").setNumber(NAVX.getRoll());
-        DataNAVX.getEntry("navx_compass").setNumber(NAVX.getCompassHeading());
-
-        DataNAVX.getEntry("navx_gyrox").setNumber(NAVX.getRawGyroX());
-        DataNAVX.getEntry("navx_gyroy").setNumber(NAVX.getRawGyroY());
-        DataNAVX.getEntry("navx_gyroz").setNumber(NAVX.getRawGyroZ());
-
-        double filtered_pitch = angle_filter.calculate(NAVX.getPitch());
-        DataNAVX.getEntry("navx_filtered_pitch").setNumber(filtered_pitch);
-
-        double pitch_change = Math.abs(50.0 * (filtered_pitch - m_last_pitch)); // Estimate the pitch change per second
-        m_last_pitch = filtered_pitch;
-
-        DataNAVX.getEntry("navx_pitch_change").setNumber(pitch_change);
-
-    }
 
     @Override
     public void testInit() {
@@ -189,7 +158,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void testPeriodic() {
-        updateNavX();
+        m_robotContainer.updateNavX();
     }
 
 }
