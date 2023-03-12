@@ -154,10 +154,10 @@ public class RobotContainer {
         xButton.whileTrue(easy_balance);
 
         final JoystickButton yButton = new JoystickButton(driverController, XboxController.Button.kY.value);
-        yButton.whileTrue(new TurnToAngle(m_driveTrain, -90.0).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+        yButton.whileTrue(new PongDrive(m_driveTrain, 90.0, () -> {return -driverController.getRawAxis(0);}).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
         final JoystickButton aButton = new JoystickButton(driverController, XboxController.Button.kA.value);
-        aButton.whileTrue(new TestReverse(m_driveTrain).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+        aButton.whileTrue(new PongDrive(m_driveTrain, -90.0, () -> {return driverController.getRawAxis(0);}).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
         Command auto_balance = new SequentialCommandGroup(
                 new MoveToRamp(m_driveTrain).withInterruptBehavior(InterruptionBehavior.kCancelSelf),
