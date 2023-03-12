@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 
 /**
  *
@@ -124,33 +125,42 @@ public class DriveTrain extends SubsystemBase {
 
         // talonSRX1.setSafetyEnabled(false);
         talonSRX1.set(ControlMode.PercentOutput, 0.0);
-        talonSRX1.configOpenloopRamp(0.0);
+        talonSRX1.configOpenloopRamp(0.2);
         talonSRX1.setInverted(false);
 
         // talonSRX2.setSafetyEnabled(false);
         talonSRX2.set(ControlMode.PercentOutput, 0.0);
-        talonSRX2.configOpenloopRamp(0.0);
+        talonSRX2.configOpenloopRamp(0.2);
         talonSRX2.setInverted(true);
 
         // talonSRX3.setSafetyEnabled(false);
         talonSRX3.set(ControlMode.PercentOutput, 0.0);
-        talonSRX3.configOpenloopRamp(0.0);
+        talonSRX3.configOpenloopRamp(0.2);
         talonSRX3.setInverted(false);
 
         // talonSRX4.setSafetyEnabled(false);
         talonSRX4.set(ControlMode.PercentOutput, 0.0);
-        talonSRX4.configOpenloopRamp(0.0);
+        talonSRX4.configOpenloopRamp(0.2);
         talonSRX4.setInverted(true);
 
         // talonSRX5.setSafetyEnabled(false);
         talonSRX5.set(ControlMode.PercentOutput, 0.0);
-        talonSRX5.configOpenloopRamp(0.0);
+        talonSRX5.configOpenloopRamp(0.2);
         talonSRX5.setInverted(false);
 
         // talonSRX6.setSafetyEnabled(false);
         talonSRX6.set(ControlMode.PercentOutput, 0.0);
-        talonSRX6.configOpenloopRamp(0.0);
+        talonSRX6.configOpenloopRamp(0.2);
         talonSRX6.setInverted(true);
+
+        SupplyCurrentLimitConfiguration current_limit = new SupplyCurrentLimitConfiguration();
+        current_limit.currentLimit = 30;
+        talonSRX1.configSupplyCurrentLimit(current_limit);
+        talonSRX2.configSupplyCurrentLimit(current_limit);
+        talonSRX3.configSupplyCurrentLimit(current_limit);
+        talonSRX4.configSupplyCurrentLimit(current_limit);
+        talonSRX5.configSupplyCurrentLimit(current_limit);
+        talonSRX6.configSupplyCurrentLimit(current_limit);
 
         accelerometer = new BuiltInAccelerometer();
 
