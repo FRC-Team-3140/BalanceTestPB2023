@@ -70,19 +70,23 @@ public class Comms3140 extends SubsystemBase {
         double m_current_value = 0.0;
         final NetworkTableEntry m_table_entry;
 
-        DoubleUpdater(String subsystem, String entry, DoubleGetter getter, DoubleSetter setter, double default_value,
+        DoubleUpdater(String[] path, DoubleGetter getter, DoubleSetter setter, double default_value,
                 TimePeriod period) {
-            this.m_subsystem = subsystem;
-            this.m_entry = entry;
             this.m_getter = getter;
             this.m_setter = setter;
             this.m_period = period;
 
-            m_table_entry = m_settings_table.getSubTable(subsystem).getEntry(entry);
+            NetworkTable table = m_settings_table;
+            for(int i = 0; i < path.length-1 ; i = i++ ){
+                    String name = path[i];
+                    table = table.getSubTable(name);
+            }
+            m_table_entry = table.getEntry(path[path.length-1]);
+
             m_current_value = m_table_entry.getDouble(default_value);
             if (Math.abs(m_current_value - default_value) < kEpsilon) {
-                System.out.printf("Warning: Settings3140/%s/%s entry %.5f does not equal default value of %.5f.\n",
-                        subsystem, entry, m_current_value, default_value);
+                System.out.printf("Warning: %s entry %.5f does not equal default value of %.5f.\n",
+                        m_table_entry.getName(), m_current_value, default_value);
             }
             m_table_entry.setDouble(m_current_value);
             m_table_entry.setPersistent();
@@ -116,19 +120,23 @@ public class Comms3140 extends SubsystemBase {
         int m_current_value = 0;
         final NetworkTableEntry m_table_entry;
 
-        IntUpdater(String subsystem, String entry, IntGetter getter, IntSetter setter, int default_value,
+        IntUpdater(String[] path, IntGetter getter, IntSetter setter, int default_value,
                 TimePeriod period) {
-            this.m_subsystem = subsystem;
-            this.m_entry = entry;
             this.m_getter = getter;
             this.m_setter = setter;
             this.m_period = period;
 
-            m_table_entry = m_settings_table.getSubTable(subsystem).getEntry(entry);
+            NetworkTable table = m_settings_table;
+            for(int i = 0; i < path.length-1 ; i = i++ ){
+                    String name = path[i];
+                    table = table.getSubTable(name);
+            }
+            m_table_entry = table.getEntry(path[path.length-1]);
+
             m_current_value = (int) m_table_entry.getInteger(default_value);
             if (m_current_value != default_value) {
-                System.out.printf("Warning: Settings3140/%s/%s entry %d does not equal default value of %d.\n",
-                        subsystem, entry, m_current_value, default_value);
+                System.out.printf("Warning: %s entry %d does not equal default value of %d.\n",
+                        m_table_entry.getName(), m_current_value, default_value);
             }
             m_table_entry.setInteger(m_current_value);
             m_table_entry.setPersistent();
@@ -162,20 +170,24 @@ public class Comms3140 extends SubsystemBase {
         boolean m_current_value = false;
         final NetworkTableEntry m_table_entry;
 
-        BooleanUpdater(String subsystem, String entry, BooleanGetter getter, BooleanSetter setter,
+        BooleanUpdater(String[] path, BooleanGetter getter, BooleanSetter setter,
                 boolean default_value,
                 TimePeriod period) {
-            this.m_subsystem = subsystem;
-            this.m_entry = entry;
             this.m_getter = getter;
             this.m_setter = setter;
             this.m_period = period;
 
-            m_table_entry = m_settings_table.getSubTable(subsystem).getEntry(entry);
+            NetworkTable table = m_settings_table;
+            for(int i = 0; i < path.length-1 ; i = i++ ){
+                    String name = path[i];
+                    table = table.getSubTable(name);
+            }
+            m_table_entry = table.getEntry(path[path.length-1]);
+
             m_current_value = m_table_entry.getBoolean(default_value);
             if (m_current_value != default_value) {
-                System.out.printf("Warning: Settings3140/%s/%s entry %s does not equal default value of %s.\n",
-                        subsystem, entry, m_current_value, default_value);
+                System.out.printf("Warning: %s entry %s does not equal default value of %s.\n",
+                        m_table_entry.getName(), m_current_value, default_value);
             }
             m_table_entry.setBoolean(m_current_value);
             m_table_entry.setPersistent();
@@ -209,20 +221,24 @@ public class Comms3140 extends SubsystemBase {
         String m_current_value = null;
         final NetworkTableEntry m_table_entry;
 
-        StringUpdater(String subsystem, String entry, StringGetter getter, StringSetter setter,
+        StringUpdater(String[] path, StringGetter getter, StringSetter setter,
                 String default_value,
                 TimePeriod period) {
-            this.m_subsystem = subsystem;
-            this.m_entry = entry;
             this.m_getter = getter;
             this.m_setter = setter;
             this.m_period = period;
 
-            m_table_entry = m_settings_table.getSubTable(subsystem).getEntry(entry);
+            NetworkTable table = m_settings_table;
+            for(int i = 0; i < path.length-1 ; i = i++ ){
+                    String name = path[i];
+                    table = table.getSubTable(name);
+            }
+            m_table_entry = table.getEntry(path[path.length-1]);
+
             m_current_value = m_table_entry.getString(default_value);
             if (m_current_value != default_value) {
-                System.out.printf("Warning: Settings3140/%s/%s entry %s does not equal default value of %s.\n",
-                        subsystem, entry, m_current_value, default_value);
+                System.out.printf("Warning: %s entry %s does not equal default value of %s.\n",
+                        m_table_entry.getName(), m_current_value, default_value);
             }
             m_table_entry.setString(m_current_value);
             m_table_entry.setPersistent();
@@ -292,13 +308,16 @@ public class Comms3140 extends SubsystemBase {
         // registerDoubleSetting("Test", "Tmp", () -> tmp, (t) -> {
         // tmp = t;
         // }, 0.0, TimePeriod.kEveryPeriodic);
-        registerStringSetting("Telemetry", "Telemetry IP Address", () -> m_telemetry_ip_address, (value) -> {
+        String[] path1 = {"Telemetry", "Telemetry IP Address"};
+        registerStringSetting(path1, () ->  m_telemetry_ip_address, (value) -> {
             m_telemetry_ip_address = value;
         }, m_telemetry_ip_address);
-        registerIntSetting("Telemetry", "Telemetry UDP Port", () -> m_telemetry_udp_port, (value) -> {
+        String[] path2 = {"Telemetry", "Telemetry UDP Port"};
+        registerIntSetting(path2, () -> m_telemetry_udp_port, (value) -> {
             m_telemetry_udp_port = value;
         }, m_telemetry_udp_port);
-        registerBooleanSetting("Telemetry", "Telemetry UDP Enabled", () -> m_telemetry_udp_enabled, (value) -> {
+        String[] path3 = {"Telemetry", "Telemetry UDP Enabled"};
+        registerBooleanSetting(path3, () -> m_telemetry_udp_enabled, (value) -> {
             m_telemetry_udp_enabled = value;
         }, m_telemetry_udp_enabled);
 
@@ -317,26 +336,26 @@ public class Comms3140 extends SubsystemBase {
      * @param update_period How often the value is checked. Default
      *                      TimePeriod.kEveryOneSeconds.
      */
-    public void registerDoubleSetting(String subsystem, String entry, DoubleGetter getter, DoubleSetter setter,
+    public void registerDoubleSetting(String[] path, DoubleGetter getter, DoubleSetter setter,
             double default_value, TimePeriod update_period) {
-        DoubleUpdater updater = new DoubleUpdater(subsystem, entry, getter, setter, default_value, update_period);
+        DoubleUpdater updater = new DoubleUpdater(path, getter, setter, default_value, update_period);
         m_update_list.add(updater);
     }
 
-    public void registerDoubleSetting(String subsystem, String entry, DoubleGetter getter, DoubleSetter setter,
+    public void registerDoubleSetting(String[] path, DoubleGetter getter, DoubleSetter setter,
             double default_value) {
-        registerDoubleSetting(subsystem, entry, getter, setter,
+        registerDoubleSetting(path, getter, setter,
                 default_value, TimePeriod.kEveryOneSeconds);
     }
 
-    public void registerDoubleSetting(String subsystem, String entry, DoubleGetter getter, DoubleSetter setter,
+    public void registerDoubleSetting(String[] path, DoubleGetter getter, DoubleSetter setter,
             TimePeriod update_period) {
-        registerDoubleSetting(subsystem, entry, getter, setter,
+        registerDoubleSetting(path, getter, setter,
                 0.0, update_period);
     }
 
-    public void registerDoubleSetting(String subsystem, String entry, DoubleGetter getter, DoubleSetter setter) {
-        registerDoubleSetting(subsystem, entry, getter, setter,
+    public void registerDoubleSetting(String[] path, DoubleGetter getter, DoubleSetter setter) {
+        registerDoubleSetting(path, getter, setter,
                 0.0, TimePeriod.kEveryOneSeconds);
     }
 
@@ -353,26 +372,26 @@ public class Comms3140 extends SubsystemBase {
      * @param update_period How often the value is checked. Default
      *                      TimePeriod.kEveryOneSeconds.
      */
-    public void registerIntSetting(String subsystem, String entry, IntGetter getter, IntSetter setter,
+    public void registerIntSetting(String[] path, IntGetter getter, IntSetter setter,
             int default_value, TimePeriod update_period) {
-        IntUpdater updater = new IntUpdater(subsystem, entry, getter, setter, default_value, update_period);
+        IntUpdater updater = new IntUpdater(path, getter, setter, default_value, update_period);
         m_update_list.add(updater);
     }
 
-    public void registerIntSetting(String subsystem, String entry, IntGetter getter, IntSetter setter,
+    public void registerIntSetting(String[] path, IntGetter getter, IntSetter setter,
             int default_value) {
-        registerIntSetting(subsystem, entry, getter, setter,
+        registerIntSetting(path, getter, setter,
                 default_value, TimePeriod.kEveryOneSeconds);
     }
 
-    public void registerIntSetting(String subsystem, String entry, IntGetter getter, IntSetter setter,
+    public void registerIntSetting(String[] path, IntGetter getter, IntSetter setter,
             TimePeriod update_period) {
-        registerIntSetting(subsystem, entry, getter, setter,
+        registerIntSetting(path, getter, setter,
                 0, update_period);
     }
 
-    public void registerIntSetting(String subsystem, String entry, IntGetter getter, IntSetter setter) {
-        registerIntSetting(subsystem, entry, getter, setter,
+    public void registerIntSetting(String[] path, IntGetter getter, IntSetter setter) {
+        registerIntSetting(path, getter, setter,
                 0, TimePeriod.kEveryOneSeconds);
     }
 
@@ -389,26 +408,26 @@ public class Comms3140 extends SubsystemBase {
      * @param update_period How often the value is checked. Default
      *                      TimePeriod.kEveryOneSeconds.
      */
-    public void registerBooleanSetting(String subsystem, String entry, BooleanGetter getter, BooleanSetter setter,
+    public void registerBooleanSetting(String[] path, BooleanGetter getter, BooleanSetter setter,
             boolean default_value, TimePeriod update_period) {
-        BooleanUpdater updater = new BooleanUpdater(subsystem, entry, getter, setter, default_value, update_period);
+        BooleanUpdater updater = new BooleanUpdater(path, getter, setter, default_value, update_period);
         m_update_list.add(updater);
     }
 
-    public void registerBooleanSetting(String subsystem, String entry, BooleanGetter getter, BooleanSetter setter,
+    public void registerBooleanSetting(String[] path, BooleanGetter getter, BooleanSetter setter,
             TimePeriod update_period) {
-        registerBooleanSetting(subsystem, entry, getter, setter,
+        registerBooleanSetting(path, getter, setter,
                 false, update_period);
     }
 
-    public void registerBooleanSetting(String subsystem, String entry, BooleanGetter getter, BooleanSetter setter,
+    public void registerBooleanSetting(String[] path, BooleanGetter getter, BooleanSetter setter,
             boolean default_value) {
-        registerBooleanSetting(subsystem, entry, getter, setter,
+        registerBooleanSetting(path, getter, setter,
                 default_value, TimePeriod.kEveryOneSeconds);
     }
 
-    public void registerBooleanSetting(String subsystem, String entry, BooleanGetter getter, BooleanSetter setter) {
-        registerBooleanSetting(subsystem, entry, getter, setter, false, TimePeriod.kEveryOneSeconds);
+    public void registerBooleanSetting(String[] path, BooleanGetter getter, BooleanSetter setter) {
+        registerBooleanSetting(path, getter, setter, false, TimePeriod.kEveryOneSeconds);
     }
 
     /**
@@ -424,24 +443,24 @@ public class Comms3140 extends SubsystemBase {
      * @param update_period How often the value is checked. Default
      *                      TimePeriod.kEveryOneSeconds.
      */
-    public void registerStringSetting(String subsystem, String entry, StringGetter getter, StringSetter setter,
+    public void registerStringSetting(String[] path, StringGetter getter, StringSetter setter,
             String default_value, TimePeriod update_period) {
-        StringUpdater updater = new StringUpdater(subsystem, entry, getter, setter, default_value, update_period);
+        StringUpdater updater = new StringUpdater(path, getter, setter, default_value, update_period);
         m_update_list.add(updater);
     }
 
-    public void registerStringSetting(String subsystem, String entry, StringGetter getter, StringSetter setter,
+    public void registerStringSetting(String[] path, StringGetter getter, StringSetter setter,
             String default_value) {
-        registerStringSetting(subsystem, entry, getter, setter, default_value, TimePeriod.kEveryOneSeconds);
+        registerStringSetting(path, getter, setter, default_value, TimePeriod.kEveryOneSeconds);
     }
 
-    public void registerStringSetting(String subsystem, String entry, StringGetter getter, StringSetter setter,
+    public void registerStringSetting(String[] path, StringGetter getter, StringSetter setter,
             TimePeriod period) {
-        registerStringSetting(subsystem, entry, getter, setter, "", period);
+        registerStringSetting(path, getter, setter, "", period);
     }
 
-    public void registerStringSetting(String subsystem, String entry, StringGetter getter, StringSetter setter) {
-        registerStringSetting(subsystem, entry, getter, setter, "", TimePeriod.kEveryOneSeconds);
+    public void registerStringSetting(String[] path, StringGetter getter, StringSetter setter) {
+        registerStringSetting(path, getter, setter, "", TimePeriod.kEveryOneSeconds);
     }
 
     @Override
