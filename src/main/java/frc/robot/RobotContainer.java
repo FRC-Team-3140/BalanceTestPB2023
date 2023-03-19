@@ -65,6 +65,8 @@ public class RobotContainer {
     LinearFilter angle_filter = LinearFilter.singlePoleIIR(0.1, 0.02);;
     double m_last_pitch = 0.0;
 
+    private final Comms3140 comms = Comms3140.getInstance();
+
     // A chooser for autonomous commands
     SendableChooser<Command> m_chooser = new SendableChooser<>();
 
