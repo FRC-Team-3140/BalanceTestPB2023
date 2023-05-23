@@ -191,7 +191,7 @@ public class RobotContainer {
     }
 
     public void runCaution() {
-        m_lightshow.setMode(Lightshow.kModeCaution);
+        m_lightshow.setMode(Lightshow.kModeUSA2);
     }
 
     public void runError() {
