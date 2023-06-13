@@ -40,9 +40,7 @@ import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
  * A drivetrain based on differential drive kinematics.
  */
 public class DriveTrain extends SubsystemBase {
-
-    public static final double kSpeedConversion = 1. / 3000;
-    public static final double kDistanceConversion = 1. / 3000;
+    public static final double kPositionConversionFactor = 1.0 / 3000.0;
     public static final double kTrackWidth = 0.6;
     public static final IdleMode kIdleMode = IdleMode.kBrake;
 
@@ -150,12 +148,12 @@ public class DriveTrain extends SubsystemBase {
 
         // set the encorder speed conversion factor from native units to meters per
         // second.
-        leftEncoder.setVelocityConversionFactor(1.0 / 3000.0);
-        rightEncoder.setVelocityConversionFactor(1.0 / 3000.0);
+        leftEncoder.setVelocityConversionFactor(kPositionConversionFactor);
+        rightEncoder.setVelocityConversionFactor(kPositionConversionFactor);
 
         // set the encorder position conversion factor from native units to meters.
-        leftEncoder.setPositionConversionFactor(1.0 / 3000.0);
-        rightEncoder.setPositionConversionFactor(1.0 / 3000.0);
+        leftEncoder.setPositionConversionFactor(kPositionConversionFactor);
+        rightEncoder.setPositionConversionFactor(kPositionConversionFactor);
 
         // TODO: Remove accelerometer and navigation from the drivetrain
         accelerometer = new BuiltInAccelerometer();

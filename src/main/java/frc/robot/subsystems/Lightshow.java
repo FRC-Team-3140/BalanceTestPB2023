@@ -38,6 +38,7 @@ public class Lightshow extends SubsystemBase {
     int mode = 0;
     DriveTrain drivetrain;
     private int light_count = 54;
+    private double time_offset = 0.0;
 
     public static final int kModeBalance = 0;
     public static final int kModeCone = 1;
@@ -69,6 +70,8 @@ public class Lightshow extends SubsystemBase {
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
         Lightshow_table = inst.getTable("SmartDashboard").getSubTable("Lightshow");
 
+        time_offset = System.currentTimeMillis();
+
         led_strip.setLength(light_count);
         led_data = new AddressableLEDBuffer(light_count);
         led_strip.setData(led_data);
@@ -93,18 +96,22 @@ public class Lightshow extends SubsystemBase {
         int N = colors.length;
 
         // the timestamp is converted to seconds
-        double timestamp = System.currentTimeMillis() / 1000.0;
+        double timestamp = (System.currentTimeMillis() - time_offset) / 1000.0;
 
         int offset = (int)(timestamp*speed);
 
         int pattern_length = N * width;
 
+        System.out.printf("rotate colors %d %d %d %f\n",N, offset,pattern_length,timestamp);
+
         for (int i = 0; i < light_count; i++) {
             int idx = (i + offset) % pattern_length; // index within pattern
             int color_index = idx/width;//idx / N; // the color index
+            if(color_index < 0) color_index = 0; // Check for out of bounds
+            Color color = colors[color_index%N];
 
             // The color is assigned to the led.
-            led_data.setLED(i, colors[color_index]);
+            led_data.setLED(i, color);
         }
     }
 
@@ -289,6 +296,7 @@ public class Lightshow extends SubsystemBase {
 
     public void setMode(int m) {
         mode = m;
+        //time_offset = System.currentTimeMillis();
         Lightshow_table.getEntry("mode").setNumber(mode);
     }
 
