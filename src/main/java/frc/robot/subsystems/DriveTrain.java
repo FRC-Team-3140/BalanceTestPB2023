@@ -244,6 +244,10 @@ public class DriveTrain extends SubsystemBase {
         differentialDrive1.arcadeDrive(xSpeed, zRotation);
     }
 
+    public void curveDrive(double xSpeed,double zRotation){
+        differentialDrive1.curvatureDrive(xSpeed , zRotation, false);
+    }
+
     public double getAccelX() {
         return accelerometer.getX();
     }
