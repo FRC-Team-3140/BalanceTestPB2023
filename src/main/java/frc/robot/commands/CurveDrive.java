@@ -15,7 +15,7 @@ public class CurveDrive extends CommandBase {
   private final Supplier<Double> m_boostAxisSupplier;
   private final Supplier<Double> m_slowAxisSupplier;
 
-  double speed_normal = 0.50;
+  double speed_normal = 0.40;
   double speed_max = 1.0;
   double speed_min = 0.30;
   double turn_norm = 0.8;
@@ -62,7 +62,7 @@ public class CurveDrive extends CommandBase {
 
     //System.out.printf("F: %.3f   S: %.3f   B: %.3f\n",fast,slow,boost);
     
-    m_drivetrain.curveDrive(boost*m_xaxisSpeedSupplier.get(),m_zaxisRotateSupplier.get());
+    m_drivetrain.curveDrive(boost*m_xaxisSpeedSupplier.get(),.45*m_zaxisRotateSupplier.get());
   }
 
   // Called once the command ends or is interrupted.

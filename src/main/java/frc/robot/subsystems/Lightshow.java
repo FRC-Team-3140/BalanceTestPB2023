@@ -39,6 +39,7 @@ public class Lightshow extends SubsystemBase {
     DriveTrain drivetrain;
     private int light_count = 54;
     private double time_offset = 0.0;
+    private int frame_id = 0;
 
     public static final int kModeBalance = 0;
     public static final int kModeCone = 1;
@@ -216,9 +217,13 @@ public class Lightshow extends SubsystemBase {
     }
 
     private void sparkleWhite() {
+        frame_id += 1;
+        if (frame_id % 3 != 0){ // only update every few frames to slow things down
+            return ; 
+        }
         for (int i = 0; i < light_count; i++) {
             Color color = new Color(0.0,0.0,0.0);
-            if(Math.random() < 0.1){
+            if(Math.random() < 0.15){
                 color = new Color(1.0,1.0,1.0);
             }
 
@@ -228,10 +233,14 @@ public class Lightshow extends SubsystemBase {
     }
 
     private void sparkleUSA() {
-        
+        frame_id += 1;
+        if (frame_id % 3 != 0){ // only update every few frames to slow things down
+            return ; 
+        }
+
         for (int i = 0; i < light_count; i++) {
             Color color = new Color(0.0,0.0,0.0);
-            if(Math.random() < 0.1){
+            if(Math.random() < 0.15){
                 double num = Math.random();
                 if(num < .33){
                     color = new Color(1.0,0.0,0.0); // red

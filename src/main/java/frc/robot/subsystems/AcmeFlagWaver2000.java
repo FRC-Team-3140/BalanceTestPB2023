@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class AcmeFlagWaver2000 extends SubsystemBase {
 
     private final TalonSRX waver;
-    private double speed = 0.4;
+    private double speed = 0.0;
     private double max_speed = 0.4;
 
     public AcmeFlagWaver2000(){
@@ -28,6 +28,7 @@ public class AcmeFlagWaver2000 extends SubsystemBase {
     public void periodic() {
 
         waver.set(ControlMode.PercentOutput, speed);
+        
     }
 
     public void wave() {
