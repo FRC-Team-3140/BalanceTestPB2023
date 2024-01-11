@@ -7,3 +7,11 @@
 # BalanceTestPB2023
 Balance testing on the parade bot.
 
+# Elevator Wiring
+ * Power: 12V 40Amp PDM 
+ * Elevator Relays
+   * Power: VRM 5v 500ma
+   * Control 1: PWM 1
+   * Control 2: PWM 2
+
+Elevator control code: ???
